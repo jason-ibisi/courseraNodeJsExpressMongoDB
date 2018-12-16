@@ -4,6 +4,9 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const dishRouter = require('./routes/dishRouter');
+const promoRouter = require('./routes/promoRouter');
+const leaderRouter = require('./routes/leaderRouter');
+
 const hostname = 'localhost';
 const port = 3000;
 
@@ -13,7 +16,12 @@ app.use(bodyParser.json());
 
 // REST API support for DISHES endpoints
 app.use('/dishes', dishRouter);
-app.use('/dishes/:dishId', dishRouter);
+
+// REST API support for LEADERS endpoints
+app.use('/leaders', leaderRouter);
+
+// REST API support for PROMOS endpoints
+app.use('/promotions', promoRouter);
 
 // Serve up HTML files
 app.use(express.static(__dirname + '/public'));
