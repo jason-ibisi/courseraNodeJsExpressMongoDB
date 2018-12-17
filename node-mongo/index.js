@@ -1,5 +1,6 @@
 const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
+const dbOperation = require('./operations');
 
 // URL of mongodb server
 const url = 'mongodb://localhost:27017/';
@@ -15,31 +16,27 @@ MongoClient.connect(url, {useNewUrlParser: true}, (err, client) => {
 
     // connect to database
     const db = client.db(dbname);
-    const collection = db.collection('dishes');
 
-    collection.insertOne({
-        "name": "Uthapizza", 
-        "description": "test"}, 
-        (err, result) => {
-            assert.equal(err, null);
+    dbOperation.insertDocument(db, {name: "Vadonut", description: "Test"}, "dishes", (result) => {
+        console.log('Insert Document:\n', result.ops);
 
-            console.log('After Insert:\n');
-            console.log(result.ops);
+        dbOperation.findDocuments(db, "dishes", (docs) => {
+            console.log('Found Documents:\n', docs);
 
-            // Return collections in the database; 
-            // empty find array means all docs would be returned 
-            collection.find({}).toArray((err, docs) => {
-                assert.equal(err, null);
+            dbOperation.updateDocument(db, {name: 'Vadonut'}, {description: 'Updated Test'}, "dishes", (result) => {
+                console.log('Updated Document:\n', result.result);
 
-                console.log('Found:\n');
-                console.log(docs);
+                dbOperation.findDocuments(db, "dishes", (docs) => {
+                    console.log('Found Documents:\n', docs);
 
-                db.dropCollection('dishes', (err, result) => {
-                    assert.equal(err, null);
+                    db.dropCollection("dishes", (result) => {
+                        console.log('Dropped Collection: ', result);
 
-                    client.close();
+                        client.close();
+                    });
                 });
             });
+        });
     });
 
 });
