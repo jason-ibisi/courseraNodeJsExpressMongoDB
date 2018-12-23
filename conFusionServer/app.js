@@ -40,11 +40,14 @@ app.use(session({
   resave: true
 }));
 
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
 // setup authentication
 function auth(req, res, next) {
   console.log(req.session);
 
-  // check if user field in signed cookies 
+  // check if user field in session 
   if (!req.session.user) {
     var authHeader = req.headers.authorization;
 
@@ -55,25 +58,9 @@ function auth(req, res, next) {
       err.status = 401;
       return next(err);
     }
-
-    var auth = new Buffer.from(authHeader.split(' ')[1], 'base64').toString().split(':');
-
-    var username = auth[0];
-    var password = auth[1];
-
-    if (username === 'admin' && password === 'password') {
-      req.session.user = 'admin';
-      next(); // authorized
-    }
-    else {
-      this.err = new Error('You are not authenticated!');
-      res.setHeader('WWW-Authenticate', 'Basic');
-      this.err.status = 401;
-      return next(this.err);
-    }
   }
   else {
-    if(req.session.user === 'admin') {
+    if(req.session.user === 'authenticated') {
       console.log('req.session: ', req.session);
       next();
     }
@@ -86,12 +73,11 @@ function auth(req, res, next) {
     }
   }
 }
+
 app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
