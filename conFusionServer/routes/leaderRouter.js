@@ -17,7 +17,7 @@ leaderRouter.route('/')
         }, (err) => next(err))
         .catch((err) => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Leaders.create(req.body).then((leader) => {
             console.log('Leader created successfully.', leader);
             res.statusCode = 200;
@@ -26,11 +26,11 @@ leaderRouter.route('/')
         }, (err) => next(err))
         .catch((err) => next(err));
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         res.statusCode = 403;
         res.end('PUT operation not supported on /leaders');
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Leaders.deleteMany({}).then((response) => {
             console.log('Leaders deleted successfully.');
             res.statusCode = 200;
@@ -49,11 +49,11 @@ leaderRouter.route('/:leaderId')
         }, (err) => next(err))
         .catch((err) => next(err));
     })
-    .post(authenticate.verifyUser, (req, res, next) => {
+    .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         res.statusCode = 403;
         res.end('POST operation not supported on /leaders/' + req.params.leaderId);
     })
-    .put(authenticate.verifyUser, (req, res, next) => {
+    .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Leaders.findByIdAndUpdate(req.params.leaderId, {
             $set: req.body
         }, { new: true })
@@ -64,7 +64,7 @@ leaderRouter.route('/:leaderId')
         }, (err) => next(err))
         .catch((err) => next(err));
     })
-    .delete(authenticate.verifyUser, (req, res, next) => {
+    .delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
         Leaders.findByIdAndDelete(req.params.leaderId).then((response) => {
             console.log('Leader ' + req.params.leaderId + ' deleted successfully.');
             res.statusCode = 200;
