@@ -1,3 +1,21 @@
 {
-  "extends": "loopback"
+  "extends": "loopback",
+  "rules": {
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "strict": [
+      "error",
+      "never"
+    ],
+    "max-len": [ "off" ],
+    "padded-blocks": [
+      "ignore"
+    ],
+    "comma-dangle": [
+      "error",
+      "ignore"
+    ]
+  }
 }
