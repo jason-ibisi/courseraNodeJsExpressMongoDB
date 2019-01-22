@@ -22,6 +22,11 @@
       "type": "hasMany",
       "model": "Comment",
       "foreignKey": "customerId"
+    },
+    "favorites": {
+      "type": "hasMany",
+      "model": "Favorite",
+      "foreignKey": "customerId"
     }
   },
   "acls": [
